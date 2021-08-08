@@ -1,0 +1,32 @@
+parameters:
+- name: environmentName
+  type: string
+  default: ''
+- name: deploymentName
+  type: string
+  default: ''
+- name: region
+  type: string
+  default: ''
+- name: azureServiceConnection
+  type: string
+  default: ''
+- name: appType
+  type: string
+  default: 'webAppLinux'
+- name: slotName
+  type: string
+  default: 'stage'
+
+steps:
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Azure App Service Deploy: ${{ parameters.deploymentName }}-${{ parameters.environmentName }}--${{ parameters.region }}'
+  inputs:
+    azureSubscription: ${{ parameters.azureServiceConnection }}  #'Vaccine-DevTest - Principal'
+    appType: ${{ parameters.appType }} #webAppLinux
+    WebAppName: '${{ parameters.deploymentName }}-${{ parameters.environmentName }}--${{ parameters.region }}'
+    packageForLinux: '$(Pipeline.Workspace)/${{ parameters.deploymentName }}_Artifact/*.zip'
+- ${{ if  eq(parameters.environmentName, 'stage2') }}:
+    deployToSlotOrASE: true
+    ResourceGroupName: 'rg-${{ parameters.deploymentName }}-${{ parameters.environmentName }}-${{ parameters.region }}'
+    SlotName: ${{ parameters.slotName }}

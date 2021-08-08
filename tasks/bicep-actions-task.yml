@@ -1,0 +1,30 @@
+parameters:
+- name: environmentName
+  default: ''
+- name: deploymentName
+  default: ''
+- name: region
+  default: ''
+- name: azureServiceConnection
+  default: ''
+- name: deploymentScope
+  default: ''
+- name: command
+  default: ''
+
+steps:
+      - task: AzureCLI@2
+        displayName: Validate ${{ parameters.environmentName }}  template for ${{ parameters.region }}
+        inputs:
+          azureSubscription: '${{ parameters.azureServiceConnection }}'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az --version
+            az deployment ${{ parameters.deploymentScope }} ${{ parameters.command }} \
+            --name '${{ parameters.deploymentName }}-${{ parameters.environmentName }}-${{ parameters.region }}' \
+            --location ${{ parameters.region }} \
+            --template-file '${{ parameters.deploymentName }}.bicep' \
+            --parameters './parameters/${{ parameters.deploymentName }}-parameters-${{ parameters.environmentName }}.json' \
+            --parameters env=${{ parameters.environmentName }} location=${{ parameters.region }}
+          workingDirectory: './templates/IaC/'

@@ -1,0 +1,11 @@
+parameters:
+- name: deploymentName
+  default: ''
+
+steps:
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Artifact: ${{ parameters.deploymentName }} Artifact'
+  inputs:
+    targetPath: $(Build.SourcesDirectory)/
+    artifactName: ${{ parameters.deploymentName }}_Artifact
+    archiveFilePatterns: '**/*.zip'

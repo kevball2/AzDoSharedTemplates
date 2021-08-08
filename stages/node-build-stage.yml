@@ -1,0 +1,14 @@
+parameters:
+- name: deploymentName
+  type: string
+
+ 
+stages:
+- stage: ${{ parameters.deploymentName }}_build_node_stage
+  dependsOn: []
+  variables:
+  - template: ../variables/shared-variables.yml@sharedTemplates
+  jobs:
+  - template: ../jobs/node-build-job.yml@sharedTemplates
+    parameters:
+      deploymentName: ${{ parameters.deploymentName }}

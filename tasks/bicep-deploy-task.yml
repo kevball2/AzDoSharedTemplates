@@ -1,0 +1,26 @@
+parameters:
+- name: environmentName
+  default: ''
+- name: deploymentName
+  default: ''
+- name: region
+  default: ''
+- name: azureServiceConnection
+  default: ''
+
+steps:
+  - task: AzureCLI@2
+    displayName: Deploy ${{ parameters.environmentName }} template for ${{ parameters.region }}
+    inputs:
+      azureSubscription: '${{ parameters.azureServiceConnection }}'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        az --version
+        az deployment sub create \
+        --name '${{ parameters.deploymentName }}-${{ parameters.environmentName }}-${{ parameters.region }}' \
+        --location ${{ parameters.region }} \
+        --template-file '${{ parameters.deploymentName }}.bicep' \
+        --parameters './parameters/${{ parameters.deploymentName }}-parameters-${{ parameters.environmentName }}.json' \
+        --parameters env=${{ parameters.environmentName }} location=${{ parameters.region }}
+      workingDirectory: './templates/IaC/'

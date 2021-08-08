@@ -1,0 +1,22 @@
+parameters:
+- name: deploymentName
+  type: string
+  default: ''
+
+
+jobs:
+- job: ${{ parameters.deploymentName }}_job_node_build
+  steps:
+  - template: ../tasks/node-install-task.yml@sharedTemplates
+  - template: ../tasks/npm-install-task.yml@sharedTemplates
+  - template: ../tasks/npm-build-task.yml@sharedTemplates
+    parameters:
+      cwd: '$(Build.SourcesDirectory)'
+      command: 'run'
+      arguements: 'build'
+  - template: ../tasks/azdo-archive-task.yml@sharedTemplates
+    parameters:
+      deploymentName: ${{ parameters.deploymentName }}
+  - template: ../tasks/azdo-publish-task.yml@sharedTemplates
+    parameters:
+      deploymentName: ${{ parameters.deploymentName }}

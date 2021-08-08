@@ -1,0 +1,21 @@
+parameters:
+- name: deploymentName
+  type: string
+- name: environmentName
+  type: string
+- name: regions
+  type: object
+
+stages:
+- stage: ${{ parameters.deploymentName }}_build_infra_${{ parameters.environmentName }}_stage
+  dependsOn: []
+  variables:
+  - template: ../variables/shared-variables.yml@sharedTemplates
+  jobs:
+  - ${{ each region in parameters.regions }}:
+      - template: ../jobs/bicep-build-job.yml@sharedTemplates
+        parameters:
+          environmentName: ${{ parameters.environmentName }}
+          region: ${{ region }}
+          deploymentName: ${{ parameters.deploymentName }}
+          azureServiceConnection: ${{ variables.azureServiceConnection }}

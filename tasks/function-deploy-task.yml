@@ -1,0 +1,25 @@
+parameters:
+- name: environmentName
+  type: string
+  default: ''
+- name: deploymentName
+  type: string
+  default: ''
+- name: region
+  type: string
+  default: ''
+- name: azureServiceConnection
+  type: string
+  default: ''
+
+steps:
+- task: AzureFunctionApp@1
+  inputs:
+    azureSubscription: ${{ parameters.azureServiceConnection }}  #'Vaccine-DevTest - Principal'
+    appType: 'functionAppLinux'
+    appName: '${{ parameters.deploymentName }}-${{ parameters.environmentName }}'
+    deployToSlotOrASE: true
+    resourceGroupName: 'rg-${{ parameters.deploymentName }}-${{ parameters.environmentName }}-${{ parameters.region }}'
+    slotName: 'stage'
+    package: '$(Pipeline.Workspace)/${{ parameters.deploymentName }}_Artifact/*.zip'
+    runtimeStack: 'NODE|12'

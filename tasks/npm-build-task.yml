@@ -1,0 +1,14 @@
+
+steps:
+- task: Npm@1
+  displayName: 'npm build'
+  inputs:
+    cwd: '$(Build.SourcesDirectory)'
+    command: custom
+    customCommand:  run build
+- task: Npm@1
+  displayName: 'npm prune production'
+  inputs:
+    cwd: '$(Build.SourcesDirectory)'
+    command: custom
+    customCommand: prune --production

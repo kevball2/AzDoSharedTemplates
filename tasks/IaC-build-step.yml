@@ -1,0 +1,29 @@
+parameters:
+- name: location  # defaults for any parameters that aren't specified
+  default: ''
+- name: envName
+  default: ''
+- name: azureSub
+  default: ''
+- name: templateName
+  default: ''
+- name: deploymentName
+  default: ''
+
+
+steps:
+      - task: AzureCLI@2
+        displayName: Validate Bicep templates to ensure transpilation, linting, and preflight are successful
+        inputs:
+          azureSubscription: '${{ parameters.azureSub }}'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az --version
+            az deployment sub validate \
+            --name '${{ parameters.deploymentName }}-${{ parameters.envName }}-${{ parameters.location }}' \
+            --location ${{ parameters.location }} \
+            --template-file '${{ parameters.templateName }}.bicep' \
+            --parameters './parameters/${{ parameters.templateName }}-parameters-${{ parameters.envName }}.json' \
+            --parameters env=${{ parameters.envName }} location=${{ parameters.location }}
+          workingDirectory: './templates/IaC/'

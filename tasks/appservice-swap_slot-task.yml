@@ -1,0 +1,25 @@
+parameters:
+- name: environmentName
+  type: string
+  default: ''
+- name: deploymentName
+  type: string
+  default: ''
+- name: region
+  type: string
+  default: ''
+- name: azureServiceConnection
+  type: string
+  default: ''
+- name: slotName
+  type: string
+  default: 'stage'
+
+steps:
+- task: AzureAppServiceManage@0
+  displayName: 'Swap Slots: ${{ parameters.deploymentName }}-${{ parameters.environmentName }}--${{ parameters.region }}'
+  inputs:
+    azureSubscription: ${{ parameters.azureServiceConnection }}
+    WebAppName: '${{ parameters.deploymentName }}-${{ parameters.environmentName }}--${{ parameters.region }}'
+    ResourceGroupName: 'rg-${{ parameters.deploymentName }}-${{ parameters.environmentName }}-${{ parameters.region }}'
+    SourceSlot: ${{ parameters.slotName }}

@@ -1,0 +1,35 @@
+parameters:
+- name: location  # defaults for any parameters that aren't specified
+  default: ''
+- name: envName
+  default: ''
+- name: azureSub
+  default: ''
+- name: templateName
+  default: ''
+- name: deploymentName
+  default: ''
+
+jobs:
+    - deployment: Deploy${{ parameters.envName }}${{ parameters.location}}
+      displayName: '${{ parameters.envName }} Deploy IaC-${{ parameters.templateName }} to ${{ parameters.location}}'
+      environment: '${{ parameters.envName }}'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - checkout: self
+              - template: ../steps/IaC-what-if.yaml
+                parameters:
+                    location: ${{ parameters.location}}
+                    envName: ${{ parameters.envName }}
+                    azureSub: ${{ parameters.azuresub }}
+                    deploymentName: ${{ parameters.deploymentName }}
+                    templateName: ${{ parameters.templateName }}
+              - template: ../steps/IaC-deploy.yaml
+                parameters:
+                    location: ${{ parameters.location}} 
+                    envName: ${{ parameters.envName }}
+                    azureSub: ${{ parameters.azuresub }}
+                    deploymentName: ${{ parameters.deploymentName }}
+                    templateName: ${{ parameters.templateName }}

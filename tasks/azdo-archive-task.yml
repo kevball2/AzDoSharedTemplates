@@ -1,0 +1,13 @@
+parameters:
+- name: deploymentName
+  default: ''
+
+steps:
+- task: ArchiveFiles@2
+  displayName: 'Archive $(Build.SourcesDirectory)'
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)'
+    includeRootFolder: false
+    replaceExistingArchive: false
+    verbose: true
+    archiveFile: ${{ parameters.deploymentName }}

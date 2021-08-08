@@ -1,0 +1,26 @@
+parameters:
+- name: deploymentName
+  type: string
+- name: environmentName
+  type: string
+- name: regions
+  type: object
+- name: dependsOn
+  type: string
+  default: ''
+
+stages:
+- stage: ${{ parameters.deploymentName }}_deploy_function_${{ parameters.environmentName }}_stage
+  dependsOn: 
+  - ${{ parameters.deploymentName }}_deploy_infra_${{ parameters.environmentName }}_stage
+  - ${{ parameters.deploymentName }}_build_node_stage
+  variables:
+  - template: ../variables/shared-variables.yml@sharedTemplates
+  jobs:
+  - ${{ each region in parameters.regions }}:
+      - template: ../jobs/function-deploy-job.yml@sharedTemplates
+        parameters:
+          environmentName: ${{ parameters.environmentName }}
+          region: ${{ region }}
+          deploymentName: ${{ parameters.deploymentName }}
+          azureServiceConnection: ${{ variables.azureServiceConnection }}

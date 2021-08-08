@@ -1,0 +1,5 @@
+steps:
+- task: CopyFiles@2
+  inputs:
+    Contents: 'dist/**' # Pull the build directory (Node/TypeScript)
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'

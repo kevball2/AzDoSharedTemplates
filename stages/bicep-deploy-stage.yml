@@ -1,0 +1,29 @@
+parameters:
+- name: deploymentName
+  type: string
+- name: environmentName
+  type: string
+- name: regions
+  type: object
+- name: dependsOn
+  type: string
+  default: ''
+
+stages:
+- stage: ${{ parameters.deploymentName }}_deploy_infra_${{ parameters.environmentName }}_stage
+  variables:
+  - template: ../variables/shared-variables.yml@sharedTemplates
+  ${{ if  eq(parameters.environmentName, 'dev2') }}:
+    dependsOn: ${{ parameters.deploymentName }}_build_infra_${{ parameters.environmentName }}_stage
+  ${{ if  eq(parameters.environmentName, 'uat2') }}:
+    dependsOn: ${{ parameters.deploymentName }}_build_infra_${{ parameters.environmentName }}_stage
+  ${{ if  eq(parameters.environmentName, 'prod2') }}:
+    dependsOn: ${{ parameters.deploymentName }}_build_infra_${{ parameters.environmentName }}_stage
+  jobs:
+  - ${{ each region in parameters.regions }}:
+      - template: ../jobs/bicep-deploy-job.yml@sharedTemplates
+        parameters:
+          environmentName: ${{ parameters.environmentName }}
+          region: ${{ region }}
+          deploymentName: ${{ parameters.deploymentName }}
+          azureServiceConnection: ${{ variables.azureServiceConnection }}

@@ -1,0 +1,30 @@
+parameters:
+- name: environmentName
+  type: string
+  default: ''
+- name: deploymentName
+  type: string
+  default: ''
+- name: region
+  type: string
+  default: ''
+- name: azureServiceConnection
+  type: string
+  default: ''
+
+jobs:
+- deployment: ${{ parameters.deploymentName }}_${{ parameters.environmentName }}_${{ parameters.region }}
+  displayName: ${{ parameters.deploymentName }}_deploy_${{ parameters.environmentName }}_${{ parameters.region }}
+  environment: ${{ parameters.environmentName }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: self
+        - template: ../tasks/function-deploy-task.yml@sharedTemplates
+          parameters:
+            environmentName: ${{ parameters.environmentName }}
+            region: ${{ parameters.region }}
+            deploymentName: ${{ parameters.deploymentName }}
+            azureServiceConnection: ${{ parameters.azureServiceConnection }}
+            

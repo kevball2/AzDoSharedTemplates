@@ -1,0 +1,23 @@
+parameters:
+- name: environmentName
+  type: string
+  default: ''
+- name: deploymentName
+  type: string
+  default: ''
+- name: region
+  type: string
+  default: ''
+- name: azureServiceConnection
+  type: string
+  default: ''
+
+jobs:
+- job: ${{ parameters.deploymentName }}_job_${{ parameters.environmentName }}_${{ parameters.region }}
+  steps:
+  - template: ../tasks/bicep-build-task.yml@sharedTemplates
+    parameters:
+      environmentName: ${{ parameters.environmentName }}
+      region: ${{ parameters.region }}
+      deploymentName: ${{ parameters.deploymentName }}
+      azureServiceConnection: ${{ parameters.azureServiceConnection }}
