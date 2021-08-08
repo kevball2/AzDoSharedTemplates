@@ -4,12 +4,11 @@ variables:
   isTag: ${{ startsWith(variables['Build.SourceBranch'], 'refs/tags/v') }}
   isFork: ${{ eq(variables['System.PullRequest.IsFork'], 'True') }}
   isDev: ${{ eq(variables['Build.SourceBranch'], 'refs/heads/dev') }}
-  isAzureDevops: ${{ eq(variables['Build.SourceBranch'], 'refs/heads/azuredevops') }}
   isPR: ${{ eq(variables['Build.Reason'], 'PullRequest') }}
   isTrustedCode: ${{ eq(variables.isFork, 'False') }}
   isScheduled: ${{ eq(variables['Build.Reason'], 'Schedule') }}
   isTrustedCI: ${{ and( eq(variables.isFork,'False'), eq(variables.isPR,'False'), eq(variables.isScheduled,'False') ) }}
-  azureServiceConnection: 'Vaccine-DevTest - Principal'
-  githubServiceConnection: 'SharecareBot'
+  azureServiceConnection: 'bicepServiceConnection'
+  githubServiceConnection: 'githubServiceConnection'
   vmImageName: 'ubuntu-latest'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
