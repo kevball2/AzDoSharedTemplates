@@ -27,5 +27,5 @@ steps:
         --location ${{ parameters.region }} \
         --template-file '${{ parameters.deploymentName }}.bicep' \
         --parameters './parameters/${{ parameters.deploymentName }}-parameters-${{ parameters.environmentName }}.json' \
-        --parameters env=${{ parameters.environmentName }} location=${{ parameters.location }}
+        --parameters env=${{ parameters.environmentName }} location=${{ parameters.region }}
       workingDirectory: ${{ parameters.fileDirectory }}
