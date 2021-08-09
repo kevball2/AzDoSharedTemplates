@@ -7,6 +7,11 @@ parameters:
   default: ''
 - name: azureServiceConnection
   default: ''
+- name: location
+  default: ''
+- name: fileDirectory
+  default: './templates/IaC/'
+
 
 steps:
   - task: AzureCLI@2
@@ -22,5 +27,5 @@ steps:
         --location ${{ parameters.region }} \
         --template-file '${{ parameters.deploymentName }}.bicep' \
         --parameters './parameters/${{ parameters.deploymentName }}-parameters-${{ parameters.environmentName }}.json' \
-        --parameters env=${{ parameters.environmentName }} location=${{ parameters.region }}
-      workingDirectory: './templates/IaC/'
+        --parameters env=${{ parameters.environmentName }} location=${{ parameters.location }}
+      workingDirectory: ${{ parameters.fileDirectory }}
